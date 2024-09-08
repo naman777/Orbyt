@@ -13,31 +13,67 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  id       String   @id @default(cuid())
-  email    String   @unique
-  name     String?
+model User {
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String
   password String
   orbs     Orb[]
 }
 
-model Orb{
-  id         String   @id @default(cuid())
-  triggers    AvailableTriggers[] 
-  userId  String
-  user    User @relation(fields: [userId], references: [id])
+model Orb {
+  id           String  @id @default(uuid())
+  triggerId    String
+  userId       Int
+  trigger      Trigger?
+  actions      Action[]
+  orbRuns      OrbRun[]
+  user         User @relation(fields: [userId], references: [id])
 }
 
 model Trigger {
-  id         String   @id @default(cuid())
-  
+  id          String  @id @default(uuid())
+  orbId       String  @unique
+  triggerId   String
+  metadata    Json  @default("{}")
+  type  AvailableTrigger @relation(fields: [triggerId], references: [id])
+  orb       Orb                @relation(fields: [orbId], references: [id])
 }
 
-model AvailableTriggers {
-  id         String   @default(cuid())
-  name      String
-  triggers Trigger[]
-  orbId    String 
-  orb      Orb @relation(fields: [orbId], references: [id])
+model Action {
+  id        String  @id @default(uuid())
+  orbId     String  
+  orb       Orb     @relation(fields: [orbId], references: [id])
+  actionId  String
+  metadata    Json  @default("{}")
+  type      AvailableAction @relation(fields: [actionId], references: [id])
+  sortingOrder Int    @default(0)
+}
 
+model AvailableAction {
+  id       String @id @default(uuid())
+  name     String
+  image    String
+  actions  Action[]
+}
+
+model AvailableTrigger {
+  id       String @id @default(uuid())
+  name     String 
+  image    String
+  triggers Trigger[]
+}
+
+model OrbRun {
+  id           String @id @default(uuid())
+  orbId        String
+  metadata     Json
+  orb         Orb @relation(fields: [orbId], references: [id])
+  zapRunOutbox OrbRunOutbox?
+}
+
+model OrbRunOutbox {
+  id          String @id @default(uuid())
+  orbRunId    String @unique
+  orbRun      OrbRun @relation(fields: [orbRunId], references: [id])
 }
