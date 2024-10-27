@@ -1,3 +1,9 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,32 +18,32 @@ model User {
   name     String
   email    String
   password String
-  orbs     Orb[]
+  zaps     Zap[]
 }
 
-model Orb {
+model Zap {
   id           String  @id @default(uuid())
   triggerId    String
   userId       Int
   trigger      Trigger?
   actions      Action[]
-  orbRuns      OrbRun[]
+  zapRuns      ZapRun[]
   user         User @relation(fields: [userId], references: [id])
 }
 
 model Trigger {
   id          String  @id @default(uuid())
-  orbId       String  @unique
+  zapId       String  @unique
   triggerId   String
   metadata    Json  @default("{}")
   type  AvailableTrigger @relation(fields: [triggerId], references: [id])
-  orb       Orb                @relation(fields: [orbId], references: [id])
+  zap  Zap                @relation(fields: [zapId], references: [id])
 }
 
 model Action {
   id        String  @id @default(uuid())
-  orbId     String  
-  orb       Orb     @relation(fields: [orbId], references: [id])
+  zapId     String  
+  zap       Zap     @relation(fields: [zapId], references: [id])
   actionId  String
   metadata    Json  @default("{}")
   type      AvailableAction @relation(fields: [actionId], references: [id])
@@ -58,16 +64,16 @@ model AvailableTrigger {
   triggers Trigger[]
 }
 
-model OrbRun {
+model ZapRun {
   id           String @id @default(uuid())
-  orbId        String
+  zapId        String
   metadata     Json
-  orb         Orb @relation(fields: [orbId], references: [id])
-  zapRunOutbox OrbRunOutbox?
+  zap          Zap @relation(fields: [zapId], references: [id])
+  zapRunOutbox ZapRunOutbox?
 }
 
-model OrbRunOutbox {
+model ZapRunOutbox {
   id          String @id @default(uuid())
-  orbRunId    String @unique
-  orbRun      OrbRun @relation(fields: [orbRunId], references: [id])
+  zapRunId    String @unique
+  zapRun      ZapRun @relation(fields: [zapRunId], references: [id])
 }
