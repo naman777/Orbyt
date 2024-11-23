@@ -10,7 +10,7 @@ export default function Home() {
         <Hero />
         <div className="mt-8 md:mt-0 md:ml-12 flex justify-center ">
           <Image
-            src="https://res.cloudinary.com/Orbyt-media/image/upload/q_auto/f_auto/v1726210651/Homepage%20%E2%80%94%20Sept%202024/homepage-hero_vvpkmi.png"
+            src="https://res.cloudinary.com/zapier-media/image/upload/q_auto/f_auto/v1726210651/Homepage%20%E2%80%94%20Sept%202024/homepage-hero_vvpkmi.png"
             width={500}
             height={500}
             alt="main"
